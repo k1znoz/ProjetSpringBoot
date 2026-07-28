@@ -1,0 +1,89 @@
+ELEVE(
+  idEleve [PK],
+  nom,
+  prenom,
+  dateNaissance,
+  adresse,
+  email,
+  telephone
+)
+
+CLASSE(
+  idClasse [PK],
+  nomClasse,
+  niveau,
+  anneeScolaire
+)
+
+ENSEIGNANT(
+  idEnseignant [PK],
+  nom,
+  prenom,
+  email,
+  telephone
+)
+
+MATIERE(
+  idMatiere [PK],
+  nomMatiere,
+  coefficient
+)
+
+RESPONSABLE(
+  idResponsable [PK],
+  nom,
+  prenom,
+  email,
+  telephone
+)
+
+UTILISATEUR(
+  idUtilisateur [PK],
+  username,
+  passwordHash,
+  actif,
+  role,
+  idEnseignant [FK -> ENSEIGNANT.idEnseignant, UNIQUE, NULL],
+  idResponsable [FK -> RESPONSABLE.idResponsable, UNIQUE, NULL]
+)
+
+INSCRIPTION(
+  idInscription [PK],
+  dateInscription,
+  statut,
+  idEleve [FK -> ELEVE.idEleve],
+  idClasse [FK -> CLASSE.idClasse]
+)
+
+ENSEIGNEMENT(
+  idEnseignement [PK],
+  volumeHoraire,
+  idEnseignant [FK -> ENSEIGNANT.idEnseignant],
+  idMatiere [FK -> MATIERE.idMatiere],
+  idClasse [FK -> CLASSE.idClasse]
+)
+
+NOTE(
+  idNote [PK],
+  valeur,
+  dateNote,
+  commentaire,
+  typeEvaluation,
+  idEleve [FK -> ELEVE.idEleve],
+  idMatiere [FK -> MATIERE.idMatiere]
+)
+
+BULLETIN(
+  idBulletin [PK],
+  trimestre,
+  appreciation,
+  moyenneGenerale,
+  anneeScolaire,
+  idEleve [FK -> ELEVE.idEleve]
+)
+
+RESPONSABILITE(
+  idResponsable [PK, FK -> RESPONSABLE.idResponsable],
+  idEleve [PK, FK -> ELEVE.idEleve],
+  lienParente
+)
