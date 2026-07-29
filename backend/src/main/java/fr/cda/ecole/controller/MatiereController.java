@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.cda.ecole.entity.Matiere;
+import fr.cda.ecole.dto.MatiereDto;
 import fr.cda.ecole.service.MatiereService;
 
 @RestController
@@ -27,28 +27,29 @@ public class MatiereController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Matiere>> findAll() {
+    public ResponseEntity<List<MatiereDto>> findAll() {
         return ResponseEntity.ok(matiereService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Matiere> findById(@PathVariable Long id) {
+    public ResponseEntity<MatiereDto> findById(@PathVariable Long id) {
         return matiereService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
-    public ResponseEntity<Matiere> save(@RequestBody Matiere matiere) {
-        return new ResponseEntity<>(matiereService.save(matiere), HttpStatus.CREATED);
+    public ResponseEntity<MatiereDto> save(@RequestBody MatiereDto matiereDto) {
+        return new ResponseEntity<>(matiereService.save(matiereDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Matiere> update(@PathVariable Long id, @RequestBody Matiere matiere) {
+    public ResponseEntity<MatiereDto> update(@PathVariable Long id, @RequestBody MatiereDto matiereDto) {
         if (matiereService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(matiereService.save(matiere));
+        matiereDto.setIdMatiere(id);
+        return ResponseEntity.ok(matiereService.save(matiereDto));
     }
 
     @DeleteMapping("/{id}")

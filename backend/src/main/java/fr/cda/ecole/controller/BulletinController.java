@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.cda.ecole.entity.Bulletin;
+import fr.cda.ecole.dto.BulletinDto;
 import fr.cda.ecole.service.BulletinService;
 
 @RestController
@@ -27,28 +27,29 @@ public class BulletinController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Bulletin>> findAll() {
+    public ResponseEntity<List<BulletinDto>> findAll() {
         return ResponseEntity.ok(bulletinService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Bulletin> findById(@PathVariable Long id) {
+    public ResponseEntity<BulletinDto> findById(@PathVariable Long id) {
         return bulletinService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
-    public ResponseEntity<Bulletin> save(@RequestBody Bulletin bulletin) {
-        return new ResponseEntity<>(bulletinService.save(bulletin), HttpStatus.CREATED);
+    public ResponseEntity<BulletinDto> save(@RequestBody BulletinDto bulletinDto) {
+        return new ResponseEntity<>(bulletinService.save(bulletinDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Bulletin> update(@PathVariable Long id, @RequestBody Bulletin bulletin) {
+    public ResponseEntity<BulletinDto> update(@PathVariable Long id, @RequestBody BulletinDto bulletinDto) {
         if (bulletinService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(bulletinService.save(bulletin));
+        bulletinDto.setIdBulletin(id);
+        return ResponseEntity.ok(bulletinService.save(bulletinDto));
     }
 
     @DeleteMapping("/{id}")

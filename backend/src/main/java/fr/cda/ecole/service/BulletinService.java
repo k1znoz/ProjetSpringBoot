@@ -5,7 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import fr.cda.ecole.entity.Bulletin;
+import fr.cda.ecole.dto.BulletinDto;
+import fr.cda.ecole.mapper.BulletinMapper;
 import fr.cda.ecole.repository.BulletinRepository;
 
 @Service
@@ -17,16 +18,21 @@ public class BulletinService {
         this.bulletinRepository = bulletinRepository;
     }
 
-    public List<Bulletin> findAll() {
-        return bulletinRepository.findAll();
+    public List<BulletinDto> findAll() {
+        return bulletinRepository.findAll().stream()
+                .map(BulletinMapper::toDto)
+                .toList();
     }
 
-    public Optional<Bulletin> findById(Long id) {
-        return bulletinRepository.findById(id);
+    public Optional<BulletinDto> findById(Long id) {
+        return bulletinRepository.findById(id)
+                .map(BulletinMapper::toDto);
     }
 
-    public Bulletin save(Bulletin bulletin) {
-        return bulletinRepository.save(bulletin);
+    public BulletinDto save(BulletinDto bulletinDto) {
+        return BulletinMapper.toDto(
+                bulletinRepository.save(BulletinMapper.toEntity(bulletinDto))
+        );
     }
 
     public void deleteById(Long id) {

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.cda.ecole.entity.Enseignement;
+import fr.cda.ecole.dto.EnseignementDto;
 import fr.cda.ecole.service.EnseignementService;
 
 @RestController
@@ -27,28 +27,29 @@ public class EnseignementController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Enseignement>> findAll() {
+    public ResponseEntity<List<EnseignementDto>> findAll() {
         return ResponseEntity.ok(enseignementService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Enseignement> findById(@PathVariable Long id) {
+    public ResponseEntity<EnseignementDto> findById(@PathVariable Long id) {
         return enseignementService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
-    public ResponseEntity<Enseignement> save(@RequestBody Enseignement enseignement) {
-        return new ResponseEntity<>(enseignementService.save(enseignement), HttpStatus.CREATED);
+    public ResponseEntity<EnseignementDto> save(@RequestBody EnseignementDto enseignementDto) {
+        return new ResponseEntity<>(enseignementService.save(enseignementDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Enseignement> update(@PathVariable Long id, @RequestBody Enseignement enseignement) {
+    public ResponseEntity<EnseignementDto> update(@PathVariable Long id, @RequestBody EnseignementDto enseignementDto) {
         if (enseignementService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(enseignementService.save(enseignement));
+        enseignementDto.setIdEnseignement(id);
+        return ResponseEntity.ok(enseignementService.save(enseignementDto));
     }
 
     @DeleteMapping("/{id}")

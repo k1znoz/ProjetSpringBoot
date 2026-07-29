@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.cda.ecole.entity.Classe;
+import fr.cda.ecole.dto.ClasseDto;
 import fr.cda.ecole.service.ClasseService;
 
 @RestController
@@ -27,28 +27,29 @@ public class ClasseController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Classe>> findAll() {
+    public ResponseEntity<List<ClasseDto>> findAll() {
         return ResponseEntity.ok(classeService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Classe> findById(@PathVariable Long id) {
+    public ResponseEntity<ClasseDto> findById(@PathVariable Long id) {
         return classeService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
-    public ResponseEntity<Classe> save(@RequestBody Classe classe) {
-        return new ResponseEntity<>(classeService.save(classe), HttpStatus.CREATED);
+    public ResponseEntity<ClasseDto> save(@RequestBody ClasseDto classeDto) {
+        return new ResponseEntity<>(classeService.save(classeDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Classe> update(@PathVariable Long id, @RequestBody Classe classe) {
+    public ResponseEntity<ClasseDto> update(@PathVariable Long id, @RequestBody ClasseDto classeDto) {
         if (classeService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(classeService.save(classe));
+        classeDto.setIdClasse(id);
+        return ResponseEntity.ok(classeService.save(classeDto));
     }
 
     @DeleteMapping("/{id}")

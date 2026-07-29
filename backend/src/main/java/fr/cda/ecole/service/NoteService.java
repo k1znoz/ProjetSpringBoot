@@ -5,7 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import fr.cda.ecole.entity.Note;
+import fr.cda.ecole.dto.NoteDto;
+import fr.cda.ecole.mapper.NoteMapper;
 import fr.cda.ecole.repository.NoteRepository;
 
 @Service
@@ -17,16 +18,21 @@ public class NoteService {
         this.noteRepository = noteRepository;
     }
 
-    public List<Note> findAll() {
-        return noteRepository.findAll();
+    public List<NoteDto> findAll() {
+        return noteRepository.findAll().stream()
+                .map(NoteMapper::toDto)
+                .toList();
     }
 
-    public Optional<Note> findById(Long id) {
-        return noteRepository.findById(id);
+    public Optional<NoteDto> findById(Long id) {
+        return noteRepository.findById(id)
+                .map(NoteMapper::toDto);
     }
 
-    public Note save(Note note) {
-        return noteRepository.save(note);
+    public NoteDto save(NoteDto noteDto) {
+        return NoteMapper.toDto(
+                noteRepository.save(NoteMapper.toEntity(noteDto))
+        );
     }
 
     public void deleteById(Long id) {

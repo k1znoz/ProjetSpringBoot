@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.cda.ecole.entity.Eleve;
+import fr.cda.ecole.dto.EleveDto;
 import fr.cda.ecole.service.EleveService;
 
 @RestController
@@ -27,28 +27,29 @@ public class EleveController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Eleve>> findAll() {
+    public ResponseEntity<List<EleveDto>> findAll() {
         return ResponseEntity.ok(eleveService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Eleve> findById(@PathVariable Long id) {
+    public ResponseEntity<EleveDto> findById(@PathVariable Long id) {
         return eleveService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
-    public ResponseEntity<Eleve> save(@RequestBody Eleve eleve) {
-        return new ResponseEntity<>(eleveService.save(eleve), HttpStatus.CREATED);
+    public ResponseEntity<EleveDto> save(@RequestBody EleveDto eleveDto) {
+        return new ResponseEntity<>(eleveService.save(eleveDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Eleve> update(@PathVariable Long id, @RequestBody Eleve eleve) {
+    public ResponseEntity<EleveDto> update(@PathVariable Long id, @RequestBody EleveDto eleveDto) {
         if (eleveService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(eleveService.save(eleve));
+        eleveDto.setIdEleve(id);
+        return ResponseEntity.ok(eleveService.save(eleveDto));
     }
 
     @DeleteMapping("/{id}")

@@ -5,7 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import fr.cda.ecole.entity.Responsable;
+import fr.cda.ecole.dto.ResponsableDto;
+import fr.cda.ecole.mapper.ResponsableMapper;
 import fr.cda.ecole.repository.ResponsableRepository;
 
 @Service
@@ -17,16 +18,21 @@ public class ResponsableService {
         this.responsableRepository = responsableRepository;
     }
 
-    public List<Responsable> findAll() {
-        return responsableRepository.findAll();
+    public List<ResponsableDto> findAll() {
+        return responsableRepository.findAll().stream()
+                .map(ResponsableMapper::toDto)
+                .toList();
     }
 
-    public Optional<Responsable> findById(Long id) {
-        return responsableRepository.findById(id);
+    public Optional<ResponsableDto> findById(Long id) {
+        return responsableRepository.findById(id)
+                .map(ResponsableMapper::toDto);
     }
 
-    public Responsable save(Responsable responsable) {
-        return responsableRepository.save(responsable);
+    public ResponsableDto save(ResponsableDto responsableDto) {
+        return ResponsableMapper.toDto(
+                responsableRepository.save(ResponsableMapper.toEntity(responsableDto))
+        );
     }
 
     public void deleteById(Long id) {

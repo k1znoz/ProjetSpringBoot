@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.cda.ecole.entity.Inscription;
+import fr.cda.ecole.dto.InscriptionDto;
 import fr.cda.ecole.service.InscriptionService;
 
 @RestController
@@ -27,28 +27,29 @@ public class InscriptionController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Inscription>> findAll() {
+    public ResponseEntity<List<InscriptionDto>> findAll() {
         return ResponseEntity.ok(inscriptionService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Inscription> findById(@PathVariable Long id) {
+    public ResponseEntity<InscriptionDto> findById(@PathVariable Long id) {
         return inscriptionService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
-    public ResponseEntity<Inscription> save(@RequestBody Inscription inscription) {
-        return new ResponseEntity<>(inscriptionService.save(inscription), HttpStatus.CREATED);
+    public ResponseEntity<InscriptionDto> save(@RequestBody InscriptionDto inscriptionDto) {
+        return new ResponseEntity<>(inscriptionService.save(inscriptionDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Inscription> update(@PathVariable Long id, @RequestBody Inscription inscription) {
+    public ResponseEntity<InscriptionDto> update(@PathVariable Long id, @RequestBody InscriptionDto inscriptionDto) {
         if (inscriptionService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(inscriptionService.save(inscription));
+        inscriptionDto.setIdInscription(id);
+        return ResponseEntity.ok(inscriptionService.save(inscriptionDto));
     }
 
     @DeleteMapping("/{id}")

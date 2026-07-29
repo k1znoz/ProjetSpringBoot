@@ -5,7 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import fr.cda.ecole.entity.Utilisateur;
+import fr.cda.ecole.dto.UtilisateurDto;
+import fr.cda.ecole.mapper.UtilisateurMapper;
 import fr.cda.ecole.repository.UtilisateurRepository;
 
 @Service
@@ -17,16 +18,21 @@ public class UtilisateurService {
         this.utilisateurRepository = utilisateurRepository;
     }
 
-    public List<Utilisateur> findAll() {
-        return utilisateurRepository.findAll();
+    public List<UtilisateurDto> findAll() {
+        return utilisateurRepository.findAll().stream()
+                .map(UtilisateurMapper::toDto)
+                .toList();
     }
 
-    public Optional<Utilisateur> findById(Long id) {
-        return utilisateurRepository.findById(id);
+    public Optional<UtilisateurDto> findById(Long id) {
+        return utilisateurRepository.findById(id)
+                .map(UtilisateurMapper::toDto);
     }
 
-    public Utilisateur save(Utilisateur utilisateur) {
-        return utilisateurRepository.save(utilisateur);
+    public UtilisateurDto save(UtilisateurDto utilisateurDto) {
+        return UtilisateurMapper.toDto(
+                utilisateurRepository.save(UtilisateurMapper.toEntity(utilisateurDto))
+        );
     }
 
     public void deleteById(Long id) {

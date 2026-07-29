@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.cda.ecole.entity.Utilisateur;
+import fr.cda.ecole.dto.UtilisateurDto;
 import fr.cda.ecole.service.UtilisateurService;
 
 @RestController
@@ -27,28 +27,29 @@ public class UtilisateurController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Utilisateur>> findAll() {
+    public ResponseEntity<List<UtilisateurDto>> findAll() {
         return ResponseEntity.ok(utilisateurService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Utilisateur> findById(@PathVariable Long id) {
+    public ResponseEntity<UtilisateurDto> findById(@PathVariable Long id) {
         return utilisateurService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
-    public ResponseEntity<Utilisateur> save(@RequestBody Utilisateur utilisateur) {
-        return new ResponseEntity<>(utilisateurService.save(utilisateur), HttpStatus.CREATED);
+    public ResponseEntity<UtilisateurDto> save(@RequestBody UtilisateurDto utilisateurDto) {
+        return new ResponseEntity<>(utilisateurService.save(utilisateurDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Utilisateur> update(@PathVariable Long id, @RequestBody Utilisateur utilisateur) {
+    public ResponseEntity<UtilisateurDto> update(@PathVariable Long id, @RequestBody UtilisateurDto utilisateurDto) {
         if (utilisateurService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(utilisateurService.save(utilisateur));
+        utilisateurDto.setIdUtilisateur(id);
+        return ResponseEntity.ok(utilisateurService.save(utilisateurDto));
     }
 
     @DeleteMapping("/{id}")

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.cda.ecole.entity.Note;
+import fr.cda.ecole.dto.NoteDto;
 import fr.cda.ecole.service.NoteService;
 
 @RestController
@@ -27,28 +27,29 @@ public class NoteController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Note>> findAll() {
+    public ResponseEntity<List<NoteDto>> findAll() {
         return ResponseEntity.ok(noteService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Note> findById(@PathVariable Long id) {
+    public ResponseEntity<NoteDto> findById(@PathVariable Long id) {
         return noteService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/")
-    public ResponseEntity<Note> save(@RequestBody Note note) {
-        return new ResponseEntity<>(noteService.save(note), HttpStatus.CREATED);
+    public ResponseEntity<NoteDto> save(@RequestBody NoteDto noteDto) {
+        return new ResponseEntity<>(noteService.save(noteDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Note> update(@PathVariable Long id, @RequestBody Note note) {
+    public ResponseEntity<NoteDto> update(@PathVariable Long id, @RequestBody NoteDto noteDto) {
         if (noteService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(noteService.save(note));
+        noteDto.setIdNote(id);
+        return ResponseEntity.ok(noteService.save(noteDto));
     }
 
     @DeleteMapping("/{id}")

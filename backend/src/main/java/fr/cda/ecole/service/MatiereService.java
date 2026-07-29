@@ -5,7 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import fr.cda.ecole.entity.Matiere;
+import fr.cda.ecole.dto.MatiereDto;
+import fr.cda.ecole.mapper.MatiereMapper;
 import fr.cda.ecole.repository.MatiereRepository;
 
 @Service
@@ -17,16 +18,21 @@ public class MatiereService {
         this.matiereRepository = matiereRepository;
     }
 
-    public List<Matiere> findAll() {
-        return matiereRepository.findAll();
+    public List<MatiereDto> findAll() {
+        return matiereRepository.findAll().stream()
+                .map(MatiereMapper::toDto)
+                .toList();
     }
 
-    public Optional<Matiere> findById(Long id) {
-        return matiereRepository.findById(id);
+    public Optional<MatiereDto> findById(Long id) {
+        return matiereRepository.findById(id)
+                .map(MatiereMapper::toDto);
     }
 
-    public Matiere save(Matiere matiere) {
-        return matiereRepository.save(matiere);
+    public MatiereDto save(MatiereDto matiereDto) {
+        return MatiereMapper.toDto(
+                matiereRepository.save(MatiereMapper.toEntity(matiereDto))
+        );
     }
 
     public void deleteById(Long id) {

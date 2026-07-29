@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.cda.ecole.entity.Responsabilite;
+import fr.cda.ecole.dto.ResponsabiliteDto;
 import fr.cda.ecole.entity.ResponsabiliteId;
 import fr.cda.ecole.service.ResponsabiliteService;
 
@@ -28,12 +28,12 @@ public class ResponsabiliteController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Responsabilite>> findAll() {
+    public ResponseEntity<List<ResponsabiliteDto>> findAll() {
         return ResponseEntity.ok(responsabiliteService.findAll());
     }
 
     @GetMapping("/{idResponsable}/{idEleve}")
-    public ResponseEntity<Responsabilite> findById(
+    public ResponseEntity<ResponsabiliteDto> findById(
             @PathVariable Long idResponsable,
             @PathVariable Long idEleve
     ) {
@@ -44,22 +44,23 @@ public class ResponsabiliteController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Responsabilite> save(@RequestBody Responsabilite responsabilite) {
-        return new ResponseEntity<>(responsabiliteService.save(responsabilite), HttpStatus.CREATED);
+    public ResponseEntity<ResponsabiliteDto> save(@RequestBody ResponsabiliteDto responsabiliteDto) {
+        return new ResponseEntity<>(responsabiliteService.save(responsabiliteDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{idResponsable}/{idEleve}")
-    public ResponseEntity<Responsabilite> update(
+    public ResponseEntity<ResponsabiliteDto> update(
             @PathVariable Long idResponsable,
             @PathVariable Long idEleve,
-            @RequestBody Responsabilite responsabilite
+            @RequestBody ResponsabiliteDto responsabiliteDto
     ) {
         ResponsabiliteId id = new ResponsabiliteId(idResponsable, idEleve);
         if (responsabiliteService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        responsabilite.setId(id);
-        return ResponseEntity.ok(responsabiliteService.save(responsabilite));
+        responsabiliteDto.setIdResponsable(idResponsable);
+        responsabiliteDto.setIdEleve(idEleve);
+        return ResponseEntity.ok(responsabiliteService.save(responsabiliteDto));
     }
 
     @DeleteMapping("/{idResponsable}/{idEleve}")

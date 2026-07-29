@@ -5,7 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import fr.cda.ecole.entity.Inscription;
+import fr.cda.ecole.dto.InscriptionDto;
+import fr.cda.ecole.mapper.InscriptionMapper;
 import fr.cda.ecole.repository.InscriptionRepository;
 
 @Service
@@ -17,16 +18,21 @@ public class InscriptionService {
         this.inscriptionRepository = inscriptionRepository;
     }
 
-    public List<Inscription> findAll() {
-        return inscriptionRepository.findAll();
+    public List<InscriptionDto> findAll() {
+        return inscriptionRepository.findAll().stream()
+                .map(InscriptionMapper::toDto)
+                .toList();
     }
 
-    public Optional<Inscription> findById(Long id) {
-        return inscriptionRepository.findById(id);
+    public Optional<InscriptionDto> findById(Long id) {
+        return inscriptionRepository.findById(id)
+                .map(InscriptionMapper::toDto);
     }
 
-    public Inscription save(Inscription inscription) {
-        return inscriptionRepository.save(inscription);
+    public InscriptionDto save(InscriptionDto inscriptionDto) {
+        return InscriptionMapper.toDto(
+                inscriptionRepository.save(InscriptionMapper.toEntity(inscriptionDto))
+        );
     }
 
     public void deleteById(Long id) {
