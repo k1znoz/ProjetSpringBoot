@@ -2,6 +2,7 @@ package fr.cda.ecole.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,12 +40,12 @@ public class EleveController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<EleveDto> save(@RequestBody EleveDto eleveDto) {
+    public ResponseEntity<EleveDto> save(@Valid @RequestBody EleveDto eleveDto) {
         return new ResponseEntity<>(eleveService.save(eleveDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EleveDto> update(@PathVariable Long id, @RequestBody EleveDto eleveDto) {
+    public ResponseEntity<EleveDto> update(@PathVariable Long id, @Valid @RequestBody EleveDto eleveDto) {
         if (eleveService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }

@@ -1,10 +1,17 @@
 package fr.cda.ecole.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 public class ClasseDto {
 
     private Long idClasse;
+    @NotBlank
     private String nomClasse;
+    @NotBlank
     private String niveau;
+    @NotBlank
+    @Pattern(regexp = "^\\d{4}-\\d{4}$")
     private String anneeScolaire;
 
     public ClasseDto() {

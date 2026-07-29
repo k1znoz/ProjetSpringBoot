@@ -2,13 +2,21 @@ package fr.cda.ecole.dto;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class EleveDto {
 
     private Long idEleve;
+    @NotBlank
     private String nom;
+    @NotBlank
     private String prenom;
+    @NotNull
     private LocalDate dateNaissance;
     private String adresse;
+    @Email
     private String email;
     private String telephone;
 

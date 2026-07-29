@@ -2,10 +2,17 @@ package fr.cda.ecole.dto;
 
 import java.math.BigDecimal;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class MatiereDto {
 
     private Long idMatiere;
+    @NotBlank
     private String nomMatiere;
+    @NotNull
+    @Positive
     private BigDecimal coefficient;
 
     public MatiereDto() {

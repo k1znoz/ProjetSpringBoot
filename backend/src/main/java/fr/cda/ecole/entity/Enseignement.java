@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "enseignement")
@@ -21,8 +20,6 @@ public class Enseignement {
     private Long idEnseignement;
 
     @Column(name = "volume_horaire", nullable = false)
-    @NotNull
-    @Positive
     private Integer volumeHoraire;
 
     @ManyToOne(fetch = FetchType.LAZY)

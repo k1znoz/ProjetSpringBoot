@@ -2,6 +2,7 @@ package fr.cda.ecole.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,12 +40,12 @@ public class BulletinController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<BulletinDto> save(@RequestBody BulletinDto bulletinDto) {
+    public ResponseEntity<BulletinDto> save(@Valid @RequestBody BulletinDto bulletinDto) {
         return new ResponseEntity<>(bulletinService.save(bulletinDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BulletinDto> update(@PathVariable Long id, @RequestBody BulletinDto bulletinDto) {
+    public ResponseEntity<BulletinDto> update(@PathVariable Long id, @Valid @RequestBody BulletinDto bulletinDto) {
         if (bulletinService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }

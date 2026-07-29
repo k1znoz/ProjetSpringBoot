@@ -12,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "note")
@@ -24,20 +23,15 @@ public class Note {
     private Long idNote;
 
     @Column(name = "valeur", nullable = false, precision = 5, scale = 2)
-    @NotNull
-    @DecimalMin("0.00")
-    @DecimalMax("20.00")
     private BigDecimal valeur;
 
     @Column(name = "date_note", nullable = false)
-    @NotNull
     private LocalDate dateNote;
 
     @Column(name = "commentaire", length = 255)
     private String commentaire;
 
     @Column(name = "type_evaluation", nullable = false, length = 50)
-    @NotBlank
     private String typeEvaluation;
 
     @ManyToOne(fetch = FetchType.LAZY)

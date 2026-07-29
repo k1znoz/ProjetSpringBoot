@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "inscription")
@@ -23,11 +22,9 @@ public class Inscription {
     private Long idInscription;
 
     @Column(name = "date_inscription", nullable = false)
-    @NotNull
     private LocalDate dateInscription;
 
     @Column(name = "statut", nullable = false, length = 20)
-    @NotBlank
     private String statut;
 
     @ManyToOne(fetch = FetchType.LAZY)

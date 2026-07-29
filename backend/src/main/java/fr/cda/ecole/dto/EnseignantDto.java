@@ -1,10 +1,16 @@
 package fr.cda.ecole.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class EnseignantDto {
 
     private Long idEnseignant;
+    @NotBlank
     private String nom;
+    @NotBlank
     private String prenom;
+    @Email
     private String email;
     private String telephone;
 

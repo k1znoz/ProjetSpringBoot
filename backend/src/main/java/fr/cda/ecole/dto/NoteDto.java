@@ -3,12 +3,22 @@ package fr.cda.ecole.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class NoteDto {
 
     private Long idNote;
+    @NotNull
+    @DecimalMin("0.00")
+    @DecimalMax("20.00")
     private BigDecimal valeur;
+    @NotNull
     private LocalDate dateNote;
     private String commentaire;
+    @NotBlank
     private String typeEvaluation;
 
     public NoteDto() {

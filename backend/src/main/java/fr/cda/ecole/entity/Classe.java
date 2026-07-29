@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "classe")
@@ -23,16 +22,12 @@ public class Classe {
     private Long idClasse;
 
     @Column(name = "nom_classe", nullable = false, length = 50)
-    @NotBlank
     private String nomClasse;
 
     @Column(name = "niveau", nullable = false, length = 30)
-    @NotBlank
     private String niveau;
 
     @Column(name = "annee_scolaire", nullable = false, length = 9)
-    @NotBlank
-    @Pattern(regexp = "^\\d{4}-\\d{4}$")
     private String anneeScolaire;
 
     @OneToMany(mappedBy = "classe", fetch = FetchType.LAZY)

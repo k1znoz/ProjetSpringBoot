@@ -12,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "matiere")
@@ -24,12 +23,9 @@ public class Matiere {
     private Long idMatiere;
 
     @Column(name = "nom_matiere", nullable = false, unique = true, length = 100)
-    @NotBlank
     private String nomMatiere;
 
     @Column(name = "coefficient", nullable = false, precision = 4, scale = 2)
-    @NotNull
-    @Positive
     private BigDecimal coefficient;
 
     @OneToMany(mappedBy = "matiere", fetch = FetchType.LAZY)

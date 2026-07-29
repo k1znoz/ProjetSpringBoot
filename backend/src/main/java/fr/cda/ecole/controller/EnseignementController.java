@@ -2,6 +2,7 @@ package fr.cda.ecole.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,12 +40,12 @@ public class EnseignementController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<EnseignementDto> save(@RequestBody EnseignementDto enseignementDto) {
+    public ResponseEntity<EnseignementDto> save(@Valid @RequestBody EnseignementDto enseignementDto) {
         return new ResponseEntity<>(enseignementService.save(enseignementDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EnseignementDto> update(@PathVariable Long id, @RequestBody EnseignementDto enseignementDto) {
+    public ResponseEntity<EnseignementDto> update(@PathVariable Long id, @Valid @RequestBody EnseignementDto enseignementDto) {
         if (enseignementService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }

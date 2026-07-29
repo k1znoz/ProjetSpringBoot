@@ -1,9 +1,12 @@
 package fr.cda.ecole.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class ResponsabiliteDto {
 
     private Long idResponsable;
     private Long idEleve;
+    @NotBlank
     private String lienParente;
 
     public ResponsabiliteDto() {

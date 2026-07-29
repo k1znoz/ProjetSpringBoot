@@ -1,11 +1,18 @@
 package fr.cda.ecole.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class UtilisateurDto {
 
     private Long idUtilisateur;
+    @NotBlank
     private String username;
+    @NotBlank
     private String passwordHash;
+    @NotNull
     private Boolean actif;
+    @NotNull
     private String role;
 
     public UtilisateurDto() {

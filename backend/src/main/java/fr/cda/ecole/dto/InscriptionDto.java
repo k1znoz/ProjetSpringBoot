@@ -2,10 +2,15 @@ package fr.cda.ecole.dto;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class InscriptionDto {
 
     private Long idInscription;
+    @NotNull
     private LocalDate dateInscription;
+    @NotBlank
     private String statut;
 
     public InscriptionDto() {

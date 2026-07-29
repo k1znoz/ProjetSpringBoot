@@ -2,6 +2,7 @@ package fr.cda.ecole.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,7 +45,7 @@ public class ResponsabiliteController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponsabiliteDto> save(@RequestBody ResponsabiliteDto responsabiliteDto) {
+    public ResponseEntity<ResponsabiliteDto> save(@Valid @RequestBody ResponsabiliteDto responsabiliteDto) {
         return new ResponseEntity<>(responsabiliteService.save(responsabiliteDto), HttpStatus.CREATED);
     }
 
@@ -52,7 +53,7 @@ public class ResponsabiliteController {
     public ResponseEntity<ResponsabiliteDto> update(
             @PathVariable Long idResponsable,
             @PathVariable Long idEleve,
-            @RequestBody ResponsabiliteDto responsabiliteDto
+                @Valid @RequestBody ResponsabiliteDto responsabiliteDto
     ) {
         ResponsabiliteId id = new ResponsabiliteId(idResponsable, idEleve);
         if (responsabiliteService.findById(id).isEmpty()) {
