@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "responsabilite")
@@ -17,6 +18,7 @@ public class Responsabilite {
     private ResponsabiliteId id;
 
     @Column(name = "lien_parente", nullable = false, length = 30)
+    @NotBlank
     private String lienParente;
 
     @ManyToOne(fetch = FetchType.LAZY)

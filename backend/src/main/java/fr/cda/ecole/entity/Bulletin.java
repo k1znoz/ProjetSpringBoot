@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(
@@ -34,6 +35,9 @@ public class Bulletin {
     private Long idBulletin;
 
     @Column(name = "trimestre", nullable = false)
+    @NotNull
+    @Min(1)
+    @Max(3)
     private Short trimestre;
 
     @Column(name = "appreciation", columnDefinition = "TEXT")
@@ -43,6 +47,8 @@ public class Bulletin {
     private BigDecimal moyenneGenerale;
 
     @Column(name = "annee_scolaire", nullable = false, length = 9)
+    @NotBlank
+    @Pattern(regexp = "^\\d{4}-\\d{4}$")
     private String anneeScolaire;
 
     @ManyToOne(fetch = FetchType.LAZY)

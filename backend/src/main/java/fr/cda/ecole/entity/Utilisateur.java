@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "utilisateur")
@@ -22,16 +23,20 @@ public class Utilisateur {
     private Long idUtilisateur;
 
     @Column(name = "username", nullable = false, unique = true, length = 50)
+    @NotBlank
     private String username;
 
     @Column(name = "password_hash", nullable = false, length = 255)
+    @NotBlank
     private String passwordHash;
 
     @Column(name = "actif", nullable = false)
+    @NotNull
     private Boolean actif;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 20)
+    @NotNull
     private Role role;
 
     @OneToOne(fetch = FetchType.LAZY)

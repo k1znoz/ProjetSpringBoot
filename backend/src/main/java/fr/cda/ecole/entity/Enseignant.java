@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "enseignant")
@@ -23,12 +24,15 @@ public class Enseignant {
     private Long idEnseignant;
 
     @Column(name = "nom", nullable = false, length = 100)
+    @NotBlank
     private String nom;
 
     @Column(name = "prenom", nullable = false, length = 100)
+    @NotBlank
     private String prenom;
 
     @Column(name = "email", unique = true, length = 150)
+    @Email
     private String email;
 
     @Column(name = "telephone", length = 30)
