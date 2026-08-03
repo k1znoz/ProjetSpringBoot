@@ -15,6 +15,12 @@ spring:
       hibernate:
         format_sql: true
 
+application:
+  security:
+    jwt:
+      secret: ${APPLICATION_SECURITY_JWT_SECRET:12345678901234567890123456789012}
+      expiration: ${APPLICATION_SECURITY_JWT_EXPIRATION:3600000}
+
 server:
   port: ${SERVER_PORT:8080}
 
