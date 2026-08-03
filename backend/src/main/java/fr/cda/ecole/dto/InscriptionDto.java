@@ -12,6 +12,8 @@ public class InscriptionDto {
     private LocalDate dateInscription;
     @NotBlank
     private String statut;
+    private Long idEleve;
+    private Long idClasse;
 
     public InscriptionDto() {
     }
@@ -38,5 +40,21 @@ public class InscriptionDto {
 
     public void setStatut(String statut) {
         this.statut = statut;
+    }
+
+    public Long getIdEleve() {
+        return idEleve;
+    }
+
+    public void setIdEleve(Long idEleve) {
+        this.idEleve = idEleve;
+    }
+
+    public Long getIdClasse() {
+        return idClasse;
+    }
+
+    public void setIdClasse(Long idClasse) {
+        this.idClasse = idClasse;
     }
 }

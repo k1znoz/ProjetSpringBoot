@@ -20,6 +20,8 @@ public class NoteDto {
     private String commentaire;
     @NotBlank
     private String typeEvaluation;
+    private Long idEleve;
+    private Long idMatiere;
 
     public NoteDto() {
     }
@@ -62,5 +64,21 @@ public class NoteDto {
 
     public void setTypeEvaluation(String typeEvaluation) {
         this.typeEvaluation = typeEvaluation;
+    }
+
+    public Long getIdEleve() {
+        return idEleve;
+    }
+
+    public void setIdEleve(Long idEleve) {
+        this.idEleve = idEleve;
+    }
+
+    public Long getIdMatiere() {
+        return idMatiere;
+    }
+
+    public void setIdMatiere(Long idMatiere) {
+        this.idMatiere = idMatiere;
     }
 }

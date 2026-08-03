@@ -20,6 +20,7 @@ public class BulletinDto {
     @NotBlank
     @Pattern(regexp = "^\\d{4}-\\d{4}$")
     private String anneeScolaire;
+    private Long idEleve;
 
     public BulletinDto() {
     }
@@ -62,5 +63,13 @@ public class BulletinDto {
 
     public void setAnneeScolaire(String anneeScolaire) {
         this.anneeScolaire = anneeScolaire;
+    }
+
+    public Long getIdEleve() {
+        return idEleve;
+    }
+
+    public void setIdEleve(Long idEleve) {
+        this.idEleve = idEleve;
     }
 }

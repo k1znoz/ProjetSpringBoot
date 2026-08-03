@@ -9,6 +9,9 @@ public class EnseignementDto {
     @NotNull
     @Positive
     private Integer volumeHoraire;
+    private Long idEnseignant;
+    private Long idMatiere;
+    private Long idClasse;
 
     public EnseignementDto() {
     }
@@ -27,5 +30,29 @@ public class EnseignementDto {
 
     public void setVolumeHoraire(Integer volumeHoraire) {
         this.volumeHoraire = volumeHoraire;
+    }
+
+    public Long getIdEnseignant() {
+        return idEnseignant;
+    }
+
+    public void setIdEnseignant(Long idEnseignant) {
+        this.idEnseignant = idEnseignant;
+    }
+
+    public Long getIdMatiere() {
+        return idMatiere;
+    }
+
+    public void setIdMatiere(Long idMatiere) {
+        this.idMatiere = idMatiere;
+    }
+
+    public Long getIdClasse() {
+        return idClasse;
+    }
+
+    public void setIdClasse(Long idClasse) {
+        this.idClasse = idClasse;
     }
 }

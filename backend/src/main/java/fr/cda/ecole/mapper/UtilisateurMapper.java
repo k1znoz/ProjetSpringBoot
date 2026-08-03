@@ -1,5 +1,7 @@
 package fr.cda.ecole.mapper;
 
+import java.util.Locale;
+
 import fr.cda.ecole.dto.UtilisateurDto;
 import fr.cda.ecole.entity.Role;
 import fr.cda.ecole.entity.Utilisateur;
@@ -30,7 +32,17 @@ public class UtilisateurMapper {
         entity.setUsername(dto.getUsername());
         entity.setPasswordHash(dto.getPasswordHash());
         entity.setActif(dto.getActif());
-        entity.setRole(dto.getRole() != null ? Role.valueOf(dto.getRole()) : null);
+        if (dto.getRole() != null) {
+            try {
+                entity.setRole(Role.valueOf(dto.getRole().trim().toUpperCase(Locale.ROOT)));
+            } catch (IllegalArgumentException ex) {
+                throw new IllegalArgumentException(
+                        "Invalid role '" + dto.getRole() + "'. Allowed values: ADMIN, ENSEIGNANT, RESPONSABLE"
+                );
+            }
+        } else {
+            entity.setRole(null);
+        }
         return entity;
     }
 }

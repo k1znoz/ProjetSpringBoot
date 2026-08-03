@@ -1,8 +1,10 @@
 package fr.cda.ecole.mapper;
 
 import fr.cda.ecole.dto.ResponsabiliteDto;
+import fr.cda.ecole.entity.Eleve;
 import fr.cda.ecole.entity.Responsabilite;
 import fr.cda.ecole.entity.ResponsabiliteId;
+import fr.cda.ecole.entity.Responsable;
 
 public class ResponsabiliteMapper {
 
@@ -28,6 +30,16 @@ public class ResponsabiliteMapper {
         Responsabilite entity = new Responsabilite();
         entity.setId(new ResponsabiliteId(dto.getIdResponsable(), dto.getIdEleve()));
         entity.setLienParente(dto.getLienParente());
+        if (dto.getIdResponsable() != null) {
+            Responsable responsable = new Responsable();
+            responsable.setIdResponsable(dto.getIdResponsable());
+            entity.setResponsable(responsable);
+        }
+        if (dto.getIdEleve() != null) {
+            Eleve eleve = new Eleve();
+            eleve.setIdEleve(dto.getIdEleve());
+            entity.setEleve(eleve);
+        }
         return entity;
     }
 }

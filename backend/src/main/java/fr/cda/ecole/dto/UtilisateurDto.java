@@ -2,6 +2,7 @@ package fr.cda.ecole.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class UtilisateurDto {
 
@@ -13,6 +14,10 @@ public class UtilisateurDto {
     @NotNull
     private Boolean actif;
     @NotNull
+        @Pattern(
+            regexp = "ADMIN|ENSEIGNANT|RESPONSABLE",
+            message = "role must be one of: ADMIN, ENSEIGNANT, RESPONSABLE"
+        )
     private String role;
 
     public UtilisateurDto() {

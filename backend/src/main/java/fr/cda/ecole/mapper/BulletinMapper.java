@@ -2,6 +2,7 @@ package fr.cda.ecole.mapper;
 
 import fr.cda.ecole.dto.BulletinDto;
 import fr.cda.ecole.entity.Bulletin;
+import fr.cda.ecole.entity.Eleve;
 
 public class BulletinMapper {
 
@@ -16,6 +17,7 @@ public class BulletinMapper {
         dto.setAppreciation(entity.getAppreciation());
         dto.setMoyenneGenerale(entity.getMoyenneGenerale());
         dto.setAnneeScolaire(entity.getAnneeScolaire());
+        dto.setIdEleve(entity.getEleve() != null ? entity.getEleve().getIdEleve() : null);
         return dto;
     }
 
@@ -30,6 +32,11 @@ public class BulletinMapper {
         entity.setAppreciation(dto.getAppreciation());
         entity.setMoyenneGenerale(dto.getMoyenneGenerale());
         entity.setAnneeScolaire(dto.getAnneeScolaire());
+        if (dto.getIdEleve() != null) {
+            Eleve eleve = new Eleve();
+            eleve.setIdEleve(dto.getIdEleve());
+            entity.setEleve(eleve);
+        }
         return entity;
     }
 }

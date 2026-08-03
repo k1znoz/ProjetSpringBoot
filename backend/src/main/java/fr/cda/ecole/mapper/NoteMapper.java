@@ -1,6 +1,8 @@
 package fr.cda.ecole.mapper;
 
 import fr.cda.ecole.dto.NoteDto;
+import fr.cda.ecole.entity.Eleve;
+import fr.cda.ecole.entity.Matiere;
 import fr.cda.ecole.entity.Note;
 
 public class NoteMapper {
@@ -16,6 +18,8 @@ public class NoteMapper {
         dto.setDateNote(entity.getDateNote());
         dto.setCommentaire(entity.getCommentaire());
         dto.setTypeEvaluation(entity.getTypeEvaluation());
+        dto.setIdEleve(entity.getEleve() != null ? entity.getEleve().getIdEleve() : null);
+        dto.setIdMatiere(entity.getMatiere() != null ? entity.getMatiere().getIdMatiere() : null);
         return dto;
     }
 
@@ -30,6 +34,16 @@ public class NoteMapper {
         entity.setDateNote(dto.getDateNote());
         entity.setCommentaire(dto.getCommentaire());
         entity.setTypeEvaluation(dto.getTypeEvaluation());
+        if (dto.getIdEleve() != null) {
+            Eleve eleve = new Eleve();
+            eleve.setIdEleve(dto.getIdEleve());
+            entity.setEleve(eleve);
+        }
+        if (dto.getIdMatiere() != null) {
+            Matiere matiere = new Matiere();
+            matiere.setIdMatiere(dto.getIdMatiere());
+            entity.setMatiere(matiere);
+        }
         return entity;
     }
 }
