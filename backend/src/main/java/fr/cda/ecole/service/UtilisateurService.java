@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import fr.cda.ecole.dto.UtilisateurDto;
 import fr.cda.ecole.mapper.UtilisateurMapper;
@@ -13,9 +14,11 @@ import fr.cda.ecole.repository.UtilisateurRepository;
 public class UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UtilisateurService(UtilisateurRepository utilisateurRepository) {
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder) {
         this.utilisateurRepository = utilisateurRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UtilisateurDto> findAll() {
@@ -30,6 +33,7 @@ public class UtilisateurService {
     }
 
     public UtilisateurDto save(UtilisateurDto utilisateurDto) {
+        utilisateurDto.setPasswordHash(passwordEncoder.encode(utilisateurDto.getPasswordHash()));
         return UtilisateurMapper.toDto(
                 utilisateurRepository.save(UtilisateurMapper.toEntity(utilisateurDto))
         );

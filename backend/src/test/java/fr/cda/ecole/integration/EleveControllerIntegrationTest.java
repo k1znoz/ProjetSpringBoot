@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.SpringBootConfiguration;
@@ -23,16 +24,28 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.cda.ecole.dto.EleveDto;
+import fr.cda.ecole.controller.AuthController;
 import fr.cda.ecole.controller.EleveController;
 import fr.cda.ecole.exception.GlobalExceptionHandler;
+import fr.cda.ecole.entity.Role;
+import fr.cda.ecole.entity.Utilisateur;
+import fr.cda.ecole.repository.UtilisateurRepository;
+import fr.cda.ecole.security.CustomUserDetailsService;
+import fr.cda.ecole.security.JwtAuthenticationFilter;
+import fr.cda.ecole.security.JwtService;
+import fr.cda.ecole.security.dto.LoginRequest;
 import fr.cda.ecole.service.EleveService;
+import fr.cda.ecole.config.SecurityConfig;
 
 @SpringBootTest(classes = EleveControllerIntegrationTest.TestApplication.class)
 @AutoConfigureMockMvc
@@ -40,9 +53,20 @@ class EleveControllerIntegrationTest {
 
     @SpringBootConfiguration
     @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-    @Import({EleveController.class, GlobalExceptionHandler.class})
+    @Import({
+            AuthController.class,
+            EleveController.class,
+            GlobalExceptionHandler.class,
+            SecurityConfig.class,
+            JwtAuthenticationFilter.class,
+            JwtService.class,
+            CustomUserDetailsService.class
+    })
     static class TestApplication {
     }
+
+    private static final String TEST_USERNAME = "admin";
+    private static final String TEST_PASSWORD = "motdepasse123";
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,15 +74,61 @@ class EleveControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @MockBean
     private EleveService eleveService;
+
+    @MockBean
+    private UtilisateurRepository utilisateurRepository;
+
+    private String jwtToken;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setUsername(TEST_USERNAME);
+        utilisateur.setPasswordHash(passwordEncoder.encode(TEST_PASSWORD));
+        utilisateur.setActif(Boolean.TRUE);
+        utilisateur.setRole(Role.ADMIN);
+
+        when(utilisateurRepository.findByUsername(TEST_USERNAME)).thenReturn(Optional.of(utilisateur));
+
+        jwtToken = login(TEST_USERNAME, TEST_PASSWORD);
+    }
+
+    @Test
+    void login_valid_shouldReturn200AndToken() throws Exception {
+        LoginRequest request = new LoginRequest();
+        request.setUsername(TEST_USERNAME);
+        request.setPassword(TEST_PASSWORD);
+
+        mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").isNotEmpty());
+    }
+
+    @Test
+    void login_invalid_shouldReturn401() throws Exception {
+        LoginRequest request = new LoginRequest();
+        request.setUsername(TEST_USERNAME);
+        request.setPassword("bad-password");
+
+        mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized());
+    }
 
     @Test
     void getAll_shouldReturnEleves() throws Exception {
         EleveDto eleve = buildEleveDto(1L, "Dupont", "Leo", "leo@ecole.fr");
         when(eleveService.findAll()).thenReturn(List.of(eleve));
 
-        mockMvc.perform(get("/api/eleves/"))
+        performApiRequest(get("/api/eleves/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].idEleve").value(1))
                 .andExpect(jsonPath("$[0].nom").value("Dupont"));
@@ -69,7 +139,7 @@ class EleveControllerIntegrationTest {
         EleveDto eleve = buildEleveDto(1L, "Dupont", "Leo", "leo@ecole.fr");
         when(eleveService.findById(1L)).thenReturn(Optional.of(eleve));
 
-        mockMvc.perform(get("/api/eleves/1"))
+        performApiRequest(get("/api/eleves/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.idEleve").value(1))
                 .andExpect(jsonPath("$.prenom").value("Leo"));
@@ -81,7 +151,7 @@ class EleveControllerIntegrationTest {
         EleveDto saved = buildEleveDto(2L, "Martin", "Lina", "lina@ecole.fr");
         when(eleveService.save(any(EleveDto.class))).thenReturn(saved);
 
-        mockMvc.perform(post("/api/eleves/")
+        performApiRequest(post("/api/eleves/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input)))
                 .andExpect(status().isCreated())
@@ -98,7 +168,7 @@ class EleveControllerIntegrationTest {
         when(eleveService.findById(1L)).thenReturn(Optional.of(existing));
         when(eleveService.save(any(EleveDto.class))).thenReturn(updated);
 
-        mockMvc.perform(put("/api/eleves/1")
+        performApiRequest(put("/api/eleves/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatePayload)))
                 .andExpect(status().isOk())
@@ -111,10 +181,30 @@ class EleveControllerIntegrationTest {
         EleveDto existing = buildEleveDto(1L, "Dupont", "Leo", "leo@ecole.fr");
         when(eleveService.findById(1L)).thenReturn(Optional.of(existing));
 
-        mockMvc.perform(delete("/api/eleves/1"))
+        performApiRequest(delete("/api/eleves/1"))
                 .andExpect(status().isNoContent());
 
         verify(eleveService).deleteById(1L);
+    }
+
+    private String login(String username, String password) throws Exception {
+        LoginRequest request = new LoginRequest();
+        request.setUsername(username);
+        request.setPassword(password);
+
+        String responseBody = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        return objectMapper.readTree(responseBody).get("token").asText();
+    }
+
+    private org.springframework.test.web.servlet.ResultActions performApiRequest(MockHttpServletRequestBuilder requestBuilder) throws Exception {
+        return mockMvc.perform(requestBuilder.header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken));
     }
 
     private EleveDto buildEleveDto(Long id, String nom, String prenom, String email) {

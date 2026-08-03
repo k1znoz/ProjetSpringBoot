@@ -135,3 +135,7 @@ Compile puis run:
 mvnw.cmd -f .\backend\pom.xml clean compile
 mvnw.cmd -f .\backend\pom.xml spring-boot:run
 ```
+Pour tester /auth/login dans Swagger, utilise :
+
+username : DOE
+password : Passw0rd!
