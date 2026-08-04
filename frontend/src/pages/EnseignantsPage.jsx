@@ -39,7 +39,9 @@ function EnseignantsPage() {
   }, [])
 
   useEffect(() => {
-    loadEnseignants()
+    void Promise.resolve().then(() => {
+      loadEnseignants()
+    })
   }, [loadEnseignants])
 
   const handleChange = (event) => {

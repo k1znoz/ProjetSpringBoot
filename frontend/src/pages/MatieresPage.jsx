@@ -37,7 +37,9 @@ function MatieresPage() {
   }, [])
 
   useEffect(() => {
-    loadMatieres()
+    void Promise.resolve().then(() => {
+      loadMatieres()
+    })
   }, [loadMatieres])
 
   const handleChange = (event) => {

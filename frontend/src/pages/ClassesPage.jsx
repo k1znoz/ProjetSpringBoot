@@ -38,7 +38,9 @@ function ClassesPage() {
   }, [])
 
   useEffect(() => {
-    loadClasses()
+    void Promise.resolve().then(() => {
+      loadClasses()
+    })
   }, [loadClasses])
 
   const handleChange = (event) => {

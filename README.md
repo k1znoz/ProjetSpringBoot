@@ -1,141 +1,128 @@
-# Projet Spring Boot - Commandes utiles
+# Projet Spring Boot - Gestion Scolaire
 
-Ce README regroupe les commandes essentielles pour compiler, exécuter, tester et packager le backend Spring Boot.
+Application full-stack de gestion scolaire réalisée dans le cadre du sujet CDA. Le projet couvre les entités principales du domaine scolaire avec un backend Spring Boot sécurisé, un frontend React modernisé avec TailwindCSS et les livrables d’analyse attendus dans le dossier `Analyses/`.
+
+## Vue D'ensemble
+
+Le projet permet de gérer :
+
+- les élèves
+- les classes
+- les enseignants
+- les responsables
+- les matières
+- les notes
+- les bulletins
+
+L’application inclut aussi l’authentification JWT, une interface protégée côté frontend, une documentation Swagger/OpenAPI et des scripts de test côté backend.
+
+## Livrables Du Sujet
+
+Les livrables attendus par le sujet sont regroupés dans ce dépôt :
+
+- MCD Merise, dans `Analyses/`
+- MLD Merise, dans `Analyses/`
+- MPD PostgreSQL, dans `Analyses/mpd_postgresql.sql`
+- Diagramme UML des classes, dans `Analyses/umlClasses.png`
+- Code source complet backend et frontend
+- Tests unitaires et d’intégration backend
+- Docker Compose pour la base PostgreSQL
+- Documentation projet, dans ce README
+
+## Structure Du Dépôt
+
+- `backend/` : API Spring Boot, sécurité, JPA, validation, Swagger et tests
+- `frontend/` : interface React, routes protégées, CRUD et TailwindCSS
+- `Analyses/` : livrables de conception et de modélisation
+- `docker-compose.yml` : service PostgreSQL local
+- `.env.example` : variables d’environnement pour Docker
 
 ## Prérequis
 
-- Java 17+ installé
-- Utiliser le Maven Wrapper inclus (`mvnw.cmd`)
-- Se placer à la racine du projet (`ProjetSpringBoot`) ou dans `backend` selon les exemples
+- Java 17
+- Node.js 20 ou supérieur
+- Maven Wrapper inclus dans le projet backend
+- Docker Desktop si vous voulez lancer PostgreSQL via Docker Compose
 
----
+## Configuration
 
-## 1) Compiler le backend
+1. Copier le fichier `.env.example` à la racine du projet et le renommer en `.env`.
+2. Vérifier les valeurs de base de données si nécessaire.
+3. Laisser le backend utiliser la configuration de `backend/src/main/resources/application.yml` si vous restez sur les valeurs par défaut.
 
-Commande (depuis la racine):
+Variables principales utilisées par le projet :
+
+- `POSTGRES_DB`
+- `POSTGRES_USER`
+- `POSTGRES_PASSWORD`
+- `POSTGRES_PORT`
+- `SERVER_PORT`
+- `APPLICATION_SECURITY_JWT_SECRET`
+
+## Démarrage Rapide
+
+### 1) Lancer PostgreSQL avec Docker
 
 ```powershell
-mvnw.cmd -f .\backend\pom.xml clean compile
+docker compose up -d
 ```
 
-Utilité:
+Le service PostgreSQL est défini dans `docker-compose.yml` et expose le port configuré dans `.env`.
 
-- Vérifie que tout le code Java compile
-- Régénère les classes dans `backend\target`
-- Nettoie d'abord les anciens artefacts
+### 2) Lancer le backend
 
----
-
-## 2) Lancer l'application Spring Boot
-
-Commande (depuis la racine):
+Depuis la racine du projet :
 
 ```powershell
 mvnw.cmd -f .\backend\pom.xml spring-boot:run
 ```
 
-Alternative (si vous êtes déjà dans `backend`):
+Autres commandes utiles :
 
 ```powershell
-.\mvnw.cmd spring-boot:run
+mvnw.cmd -f .\backend\pom.xml clean compile
+mvnw.cmd -f .\backend\pom.xml test
+mvnw.cmd -f .\backend\pom.xml clean package
+java -jar .\backend\target\gestion-scolaire-api-0.0.1-SNAPSHOT.jar
 ```
 
-Utilité:
+### 3) Lancer le frontend
 
-- Démarre l'API en local
-- Permet de tester les endpoints (Swagger, Postman, frontend)
+```powershell
+cd .\frontend
+npm install
+npm run dev
+```
 
----
+Commandes utiles côté frontend :
 
-## 3) Exécuter les tests
+```powershell
+npm run build
+npm run lint
+```
 
-Commande:
+## Comptes Et Accès
+
+Pour tester l’authentification dans Swagger, utiliser :
+
+- username : `DOE`
+- password : `Passw0rd!`
+
+## Endpoints Et Documentation
+
+- Swagger UI : http://localhost:8080/swagger-ui/index.html
+- OpenAPI JSON : http://localhost:8080/v3/api-docs
+
+## Vérifications Disponibles
+
+Les tests backend sont présents dans `backend/src/test/java/` et couvrent à la fois des services et un test d’intégration contrôleur.
+
+Exécuter toute la suite backend :
 
 ```powershell
 mvnw.cmd -f .\backend\pom.xml test
 ```
 
-Utilité:
+## Résumé Projet
 
-- Lance les tests automatiques
-- Valide les régressions avant livraison
-
----
-
-## 4) Build complet (JAR)
-
-Commande:
-
-```powershell
-mvnw.cmd -f .\backend\pom.xml clean package
-```
-
-Utilité:
-
-- Compile + teste + génère le JAR exécutable
-- Sortie attendue dans `backend\target`
-
----
-
-## 5) Lancer le JAR généré
-
-Commande:
-
-```powershell
-java -jar .\backend\target\gestion-scolaire-api-0.0.1-SNAPSHOT.jar
-```
-
-Utilité:
-
-- Lance l'application sans Maven
-- Proche d'un lancement en environnement de déploiement
-
----
-
-## 6) Nettoyer uniquement
-
-Commande:
-
-```powershell
-mvnw.cmd -f .\backend\pom.xml clean
-```
-
-Utilité:
-
-- Supprime le dossier `target`
-- Repart d'un état propre en cas de build incohérent
-
----
-
-## 7) Vérifier rapidement que l'API répond
-
-Commande:
-
-```powershell
-Invoke-WebRequest http://localhost:8080/v3/api-docs
-```
-
-Utilité:
-
-- Vérifie que le backend est démarré
-- Vérifie que Swagger/OpenAPI répond
-
-Liens utiles:
-
-- Swagger UI: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-- OpenAPI JSON: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
-
----
-
-## Enchaînement rapide recommandé
-
-Compile puis run:
-
-```powershell
-mvnw.cmd -f .\backend\pom.xml clean compile
-mvnw.cmd -f .\backend\pom.xml spring-boot:run
-```
-Pour tester /auth/login dans Swagger, utilise :
-
-username : DOE
-password : Passw0rd!
+Ce dépôt contient bien les éléments essentiels attendus pour une livraison de projet de gestion scolaire : modélisation, backend, frontend, sécurité, persistance, tests et déploiement local via Docker. Le README sert de point d’entrée unique pour comprendre le projet, lancer chaque brique et retrouver les livrables du sujet.

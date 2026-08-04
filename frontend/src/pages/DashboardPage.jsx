@@ -3,39 +3,72 @@ import api from '../services/api'
 
 function DashboardPage() {
   const [isApiReachable, setIsApiReachable] = useState(null)
+  const [counts, setCounts] = useState({
+    eleves: '--',
+    classes: '--',
+    enseignants: '--',
+    responsables: '--',
+    matieres: '--',
+    notes: '--',
+    bulletins: '--',
+  })
 
   const cards = [
-    { icon: '👨', title: 'Eleves', count: '--', tone: 'bg-blue-50 text-blue-700' },
-    { icon: '🏫', title: 'Classes', count: '--', tone: 'bg-slate-100 text-slate-700' },
+    { key: 'eleves', icon: '👨', title: 'Eleves', tone: 'bg-blue-50 text-blue-700' },
+    { key: 'classes', icon: '🏫', title: 'Classes', tone: 'bg-slate-100 text-slate-700' },
     {
+      key: 'enseignants',
       icon: '🧑‍🏫',
       title: 'Enseignants',
-      count: '--',
       tone: 'bg-blue-50 text-blue-700',
     },
     {
+      key: 'responsables',
       icon: '👪',
       title: 'Responsables',
-      count: '--',
       tone: 'bg-slate-100 text-slate-700',
     },
-    { icon: '📚', title: 'Matieres', count: '--', tone: 'bg-blue-50 text-blue-700' },
-    { icon: '📝', title: 'Notes', count: '--', tone: 'bg-slate-100 text-slate-700' },
+    { key: 'matieres', icon: '📚', title: 'Matieres', tone: 'bg-blue-50 text-blue-700' },
+    { key: 'notes', icon: '📝', title: 'Notes', tone: 'bg-slate-100 text-slate-700' },
     {
+      key: 'bulletins',
       icon: '📄',
       title: 'Bulletins',
-      count: '--',
       tone: 'bg-blue-50 text-blue-700',
     },
   ]
 
   useEffect(() => {
     const checkApi = async () => {
+      const endpoints = [
+        { key: 'eleves', path: '/api/eleves/' },
+        { key: 'classes', path: '/api/classes/' },
+        { key: 'enseignants', path: '/api/enseignants/' },
+        { key: 'responsables', path: '/api/responsables/' },
+        { key: 'matieres', path: '/api/matieres/' },
+        { key: 'notes', path: '/api/notes/' },
+        { key: 'bulletins', path: '/api/bulletins/' },
+      ]
+
       try {
-        await api.get('/api/eleves/')
-        setIsApiReachable(true)
+        const results = await Promise.allSettled(endpoints.map(({ path }) => api.get(path)))
+        const reachable = results.some((result) => result.status === 'fulfilled')
+        setIsApiReachable(reachable)
+
+        const nextCounts = {}
+        results.forEach((result, index) => {
+          const { key } = endpoints[index]
+          if (result.status === 'fulfilled') {
+            nextCounts[key] = result.value?.data?.length ?? 0
+          } else {
+            nextCounts[key] = '--'
+          }
+        })
+
+        setCounts(nextCounts)
       } catch {
         setIsApiReachable(false)
+        setCounts((current) => ({ ...current, eleves: '--' }))
       }
     }
 
@@ -61,7 +94,9 @@ function DashboardPage() {
               <span className={`rounded-lg px-2 py-1 text-lg ${card.tone}`}>
                 {card.icon}
               </span>
-              <span className="text-2xl font-semibold text-slate-900">{card.count}</span>
+              <span className="text-2xl font-semibold text-slate-900">
+                {counts[card.key] ?? '--'}
+              </span>
             </div>
             <h2 className="mt-3 text-base font-semibold text-slate-900">{card.title}</h2>
           </article>

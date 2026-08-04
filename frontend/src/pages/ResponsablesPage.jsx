@@ -39,7 +39,9 @@ function ResponsablesPage() {
   }, [])
 
   useEffect(() => {
-    loadResponsables()
+    void Promise.resolve().then(() => {
+      loadResponsables()
+    })
   }, [loadResponsables])
 
   const handleChange = (event) => {

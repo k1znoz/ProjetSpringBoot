@@ -35,8 +35,10 @@ function ElevesPage() {
   }, [])
 
   useEffect(() => {
-    loadEleves()
-  }, [])
+    void Promise.resolve().then(() => {
+      loadEleves()
+    })
+  }, [loadEleves])
 
   const handleChange = (event) => {
     const { name, value } = event.target

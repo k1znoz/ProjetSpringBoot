@@ -48,7 +48,9 @@ function NotesPage() {
   }, [])
 
   useEffect(() => {
-    loadData()
+    void Promise.resolve().then(() => {
+      loadData()
+    })
   }, [loadData])
 
   const elevesById = useMemo(
