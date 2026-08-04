@@ -1,9 +1,12 @@
 package fr.cda.ecole.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.cda.ecole.dto.BulletinDto;
+import fr.cda.ecole.entity.Bulletin;
+import fr.cda.ecole.service.BulletinPdfService;
 import fr.cda.ecole.service.BulletinService;
 
 @RestController
@@ -22,9 +27,11 @@ import fr.cda.ecole.service.BulletinService;
 public class BulletinController {
 
     private final BulletinService bulletinService;
+    private final BulletinPdfService bulletinPdfService;
 
-    public BulletinController(BulletinService bulletinService) {
+    public BulletinController(BulletinService bulletinService, BulletinPdfService bulletinPdfService) {
         this.bulletinService = bulletinService;
+        this.bulletinPdfService = bulletinPdfService;
     }
 
     @GetMapping("/")
@@ -57,5 +64,23 @@ public class BulletinController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         bulletinService.findById(id).ifPresent(bulletin -> bulletinService.deleteById(id));
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/{id}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id) {
+        Optional<Bulletin> bulletin = bulletinService.findEntityById(id);
+        if (bulletin.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] pdfBytes = bulletinPdfService.generatePdf(bulletin.get());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"bulletin_" + id + ".pdf\"");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
     }
 }

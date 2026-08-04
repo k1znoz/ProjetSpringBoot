@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import fr.cda.ecole.dto.BulletinDto;
+import fr.cda.ecole.entity.Bulletin;
 import fr.cda.ecole.mapper.BulletinMapper;
 import fr.cda.ecole.repository.BulletinRepository;
 
@@ -27,6 +28,10 @@ public class BulletinService {
     public Optional<BulletinDto> findById(Long id) {
         return bulletinRepository.findById(id)
                 .map(BulletinMapper::toDto);
+    }
+
+    public Optional<Bulletin> findEntityById(Long id) {
+        return bulletinRepository.findWithEleveByIdBulletin(id);
     }
 
     public BulletinDto save(BulletinDto bulletinDto) {
