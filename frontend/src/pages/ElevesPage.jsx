@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import EleveForm from '../components/eleves/EleveForm'
 import EleveTable from '../components/eleves/EleveTable'
-import { create, getAll, getById, remove, update } from '../services/eleveService'
+import api from '../services/api'
+import { create, getAll, getById, remove, update, uploadPhoto } from '../services/eleveService'
 
 const EMPTY_FORM = {
   nom: '',
@@ -12,10 +13,25 @@ const EMPTY_FORM = {
   telephone: '',
 }
 
+const PHOTO_BASE_PATH = '/api/eleves'
+
+const revokeObjectUrl = (url) => {
+  if (url) {
+    URL.revokeObjectURL(url)
+  }
+}
+
+const fetchPhoto = (id) => api.get(`${PHOTO_BASE_PATH}/${id}/photo`, {
+  responseType: 'blob',
+})
+
 function ElevesPage() {
   const [eleves, setEleves] = useState([])
   const [formValues, setFormValues] = useState(EMPTY_FORM)
   const [editingId, setEditingId] = useState(null)
+  const [selectedPhotoFile, setSelectedPhotoFile] = useState(null)
+  const [photoUrls, setPhotoUrls] = useState({})
+  const [editingPhotoUrl, setEditingPhotoUrl] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -25,10 +41,34 @@ function ElevesPage() {
 
     try {
       const response = await getAll()
-      setEleves(response.data)
+      const loadedEleves = response.data
+      const nextPhotoUrls = {}
+
+      await Promise.all(
+        loadedEleves
+          .filter((eleve) => Boolean(eleve.photoPath))
+          .map(async (eleve) => {
+            try {
+              const photoResponse = await fetchPhoto(eleve.idEleve)
+              nextPhotoUrls[eleve.idEleve] = URL.createObjectURL(photoResponse.data)
+            } catch {
+              nextPhotoUrls[eleve.idEleve] = ''
+            }
+          }),
+      )
+
+      setPhotoUrls((current) => {
+        Object.values(current).forEach(revokeObjectUrl)
+        return nextPhotoUrls
+      })
+      setEleves(loadedEleves)
     } catch {
       setErrorMessage('Impossible de charger les eleves.')
       setEleves([])
+      setPhotoUrls((current) => {
+        Object.values(current).forEach(revokeObjectUrl)
+        return {}
+      })
     } finally {
       setIsLoading(false)
     }
@@ -40,6 +80,11 @@ function ElevesPage() {
     })
   }, [loadEleves])
 
+  useEffect(() => () => {
+    Object.values(photoUrls).forEach(revokeObjectUrl)
+    revokeObjectUrl(editingPhotoUrl)
+  }, [photoUrls, editingPhotoUrl])
+
   const handleChange = (event) => {
     const { name, value } = event.target
     setFormValues((current) => ({ ...current, [name]: value }))
@@ -48,6 +93,16 @@ function ElevesPage() {
   const resetForm = () => {
     setFormValues(EMPTY_FORM)
     setEditingId(null)
+    setSelectedPhotoFile(null)
+    setEditingPhotoUrl((current) => {
+      revokeObjectUrl(current)
+      return ''
+    })
+  }
+
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0] ?? null
+    setSelectedPhotoFile(file)
   }
 
   const handleSubmit = async (event) => {
@@ -55,10 +110,17 @@ function ElevesPage() {
     setErrorMessage('')
 
     try {
+      let savedEleveId = editingId
+
       if (editingId === null) {
-        await create(formValues)
+        const response = await create(formValues)
+        savedEleveId = response.data?.idEleve ?? null
       } else {
         await update(editingId, formValues)
+      }
+
+      if (selectedPhotoFile && savedEleveId !== null) {
+        await uploadPhoto(savedEleveId, selectedPhotoFile)
       }
 
       resetForm()
@@ -84,6 +146,21 @@ function ElevesPage() {
         telephone: eleve.telephone ?? '',
       })
       setEditingId(id)
+      setSelectedPhotoFile(null)
+
+      setEditingPhotoUrl((current) => {
+        revokeObjectUrl(current)
+        return ''
+      })
+
+      if (eleve.photoPath) {
+        try {
+          const photoResponse = await fetchPhoto(id)
+          setEditingPhotoUrl(URL.createObjectURL(photoResponse.data))
+        } catch {
+          setEditingPhotoUrl('')
+        }
+      }
     } catch {
       setErrorMessage('Impossible de charger cet eleve.')
     }
@@ -114,7 +191,10 @@ function ElevesPage() {
       <EleveForm
         values={formValues}
         isEditing={editingId !== null}
+        photoPreviewUrl={editingPhotoUrl}
+        selectedPhotoName={selectedPhotoFile?.name ?? ''}
         onChange={handleChange}
+        onFileChange={handleFileChange}
         onSubmit={handleSubmit}
         onCancelEdit={resetForm}
       />
@@ -124,7 +204,12 @@ function ElevesPage() {
       ) : (
         !isLoading && (
           <div className="overflow-x-auto rounded-xl">
-            <EleveTable eleves={eleves} onEdit={handleEdit} onDelete={handleDelete} />
+            <EleveTable
+              eleves={eleves}
+              photoUrls={photoUrls}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           </div>
         )
       )}

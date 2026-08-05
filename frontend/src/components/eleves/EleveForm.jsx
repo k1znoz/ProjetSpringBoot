@@ -1,7 +1,10 @@
 function EleveForm({
   values,
   isEditing,
+  photoPreviewUrl,
+  selectedPhotoName,
   onChange,
+  onFileChange,
   onSubmit,
   onCancelEdit,
 }) {
@@ -74,6 +77,32 @@ function EleveForm({
           value={values.telephone}
           onChange={onChange}
         />
+      </div>
+
+      <div>
+        <label htmlFor="photo">Photo</label>
+        <input
+          id="photo"
+          name="photo"
+          type="file"
+          accept="image/*"
+          onChange={onFileChange}
+        />
+        {isEditing && (
+          <div>
+            <p>Photo actuelle</p>
+            {photoPreviewUrl ? (
+              <img
+                src={photoPreviewUrl}
+                alt={`Photo de ${values.prenom} ${values.nom}`}
+                className="h-20 w-20 rounded object-cover"
+              />
+            ) : (
+              <span>Aucune photo</span>
+            )}
+          </div>
+        )}
+        {selectedPhotoName && <p>Nouvelle photo: {selectedPhotoName}</p>}
       </div>
 
       <button type="submit">{isEditing ? 'Mettre a jour' : 'Ajouter'}</button>

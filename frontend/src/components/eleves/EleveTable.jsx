@@ -1,8 +1,9 @@
-function EleveTable({ eleves, onEdit, onDelete }) {
+function EleveTable({ eleves, photoUrls, onEdit, onDelete }) {
   return (
     <table>
       <thead>
         <tr>
+          <th>Photo</th>
           <th>Nom</th>
           <th>Prenom</th>
           <th>Classe</th>
@@ -12,6 +13,17 @@ function EleveTable({ eleves, onEdit, onDelete }) {
       <tbody>
         {eleves.map((eleve) => (
           <tr key={eleve.idEleve}>
+            <td>
+              {photoUrls[eleve.idEleve] ? (
+                <img
+                  src={photoUrls[eleve.idEleve]}
+                  alt={`Photo de ${eleve.prenom} ${eleve.nom}`}
+                  className="h-20 w-20 rounded object-cover"
+                />
+              ) : (
+                <span>Aucune photo</span>
+              )}
+            </td>
             <td>{eleve.nom}</td>
             <td>{eleve.prenom}</td>
             <td>{eleve.classe?.nomClasse ?? ''}</td>

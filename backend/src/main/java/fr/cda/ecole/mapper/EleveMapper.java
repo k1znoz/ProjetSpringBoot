@@ -18,6 +18,7 @@ public class EleveMapper {
         dto.setAdresse(entity.getAdresse());
         dto.setEmail(entity.getEmail());
         dto.setTelephone(entity.getTelephone());
+        dto.setPhotoPath(entity.getPhotoPath());
         return dto;
     }
 
@@ -34,6 +35,7 @@ public class EleveMapper {
         entity.setAdresse(dto.getAdresse());
         entity.setEmail(dto.getEmail());
         entity.setTelephone(dto.getTelephone());
+        entity.setPhotoPath(dto.getPhotoPath());
         return entity;
     }
 }

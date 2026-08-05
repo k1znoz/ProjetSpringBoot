@@ -19,6 +19,7 @@ public class EleveDto {
     @Email
     private String email;
     private String telephone;
+    private String photoPath;
 
     public EleveDto() {
     }
@@ -77,5 +78,13 @@ public class EleveDto {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 }

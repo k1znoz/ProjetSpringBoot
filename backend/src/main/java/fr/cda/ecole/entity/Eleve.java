@@ -40,6 +40,9 @@ public class Eleve {
     @Column(name = "telephone", length = 30)
     private String telephone;
 
+    @Column(name = "photo_path", length = 255)
+    private String photoPath;
+
     @OneToMany(mappedBy = "eleve", fetch = FetchType.LAZY)
     private List<Inscription> inscriptions = new ArrayList<>();
 
@@ -109,6 +112,14 @@ public class Eleve {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 
     public List<Inscription> getInscriptions() {
