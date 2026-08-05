@@ -6,9 +6,12 @@ services:
     ports:
       - "${POSTGRES_PORT:-5433}:5432"
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # Nom de la base (modifiable via .env)
+      POSTGRES_DB: ${POSTGRES_DB:-gestion_scolaire_db}
+      # Utilisateur administrateur PostgreSQL (modifiable via .env)
+      POSTGRES_USER: ${POSTGRES_USER:-gestion_scolaire_user}
+      # Mot de passe PostgreSQL (modifiable via .env)
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gestion_scolaire_dev_password}
       TZ: ${POSTGRES_TZ:-Europe/Paris}
       PGTZ: ${POSTGRES_PGTZ:-Europe/Paris}
     volumes:

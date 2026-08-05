@@ -176,7 +176,7 @@ Le projet utilise le Maven Wrapper déjà présent dans [backend/](backend).
 Depuis la racine du projet :
 
 ```powershell
-mvnw.cmd -f .\backend\pom.xml clean compile
+.\backend\mvnw.cmd -f .\backend\pom.xml clean compile
 ```
 
 ## Utilisation de Docker / PostgreSQL
@@ -206,15 +206,15 @@ Informations observables dans le projet :
 Depuis la racine du projet :
 
 ```powershell
-mvnw.cmd -f .\backend\pom.xml spring-boot:run
+.\backend\mvnw.cmd -f .\backend\pom.xml spring-boot:run
 ```
 
 Autres commandes utiles :
 
 ```powershell
-mvnw.cmd -f .\backend\pom.xml clean compile
-mvnw.cmd -f .\backend\pom.xml test
-mvnw.cmd -f .\backend\pom.xml clean package
+.\backend\mvnw.cmd -f .\backend\pom.xml clean compile
+.\backend\mvnw.cmd -f .\backend\pom.xml test
+.\backend\mvnw.cmd -f .\backend\pom.xml clean package
 java -jar .\backend\target\gestion-scolaire-api-0.0.1-SNAPSHOT.jar
 ```
 
@@ -345,6 +345,6 @@ Pistes cohérentes avec le projet existant, sans inventer de fonctionnalité dé
 
 Les commandes documentées dans ce README correspondent aux scripts et outils réellement présents dans le dépôt :
 
-- `mvnw.cmd -f .\backend\pom.xml ...` : cohérent avec le Maven Wrapper backend et le `pom.xml` ;
+- `.\backend\mvnw.cmd -f .\backend\pom.xml ...` : cohérent avec le Maven Wrapper backend et le `pom.xml` ;
 - `npm install`, `npm run dev`, `npm run build`, `npm run lint`, `npm run preview` : cohérents avec [frontend/package.json](frontend/package.json) ;
 - `docker compose up -d` : cohérent avec [docker-compose.yml](docker-compose.yml).
