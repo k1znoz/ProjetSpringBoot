@@ -44,8 +44,8 @@ VALUES (1, 1, 'MERE');
 
 INSERT INTO utilisateur (id_utilisateur, username, password_hash, actif, role, id_enseignant, id_responsable)
 VALUES
-    (1, 'enseignant1', '$2a$10$dummyhashenseignant', TRUE, 'ENSEIGNANT', 1, NULL),
-    (2, 'responsable1', '$2a$10$dummyhashresponsable', TRUE, 'RESPONSABLE', NULL, 1);
+    (1, 'DOE', '$2a$10$1rDbJznTj7IJibZtYcs1wuMbJ4JSmXngMnwva9irAx5/mpB5bYDO.', TRUE, 'ENSEIGNANT', 1, NULL),
+    (2, 'responsable1', '$2a$10$1rDbJznTj7IJibZtYcs1wuMbJ4JSmXngMnwva9irAx5/mpB5bYDO.', TRUE, 'RESPONSABLE', NULL, 1);
 
 SELECT setval(pg_get_serial_sequence('classe', 'id_classe'), COALESCE((SELECT MAX(id_classe) FROM classe), 1), true);
 SELECT setval(pg_get_serial_sequence('enseignant', 'id_enseignant'), COALESCE((SELECT MAX(id_enseignant) FROM enseignant), 1), true);
@@ -57,4 +57,3 @@ SELECT setval(pg_get_serial_sequence('inscription', 'id_inscription'), COALESCE(
 SELECT setval(pg_get_serial_sequence('note', 'id_note'), COALESCE((SELECT MAX(id_note) FROM note), 1), true);
 SELECT setval(pg_get_serial_sequence('bulletin', 'id_bulletin'), COALESCE((SELECT MAX(id_bulletin) FROM bulletin), 1), true);
 SELECT setval(pg_get_serial_sequence('utilisateur', 'id_utilisateur'), COALESCE((SELECT MAX(id_utilisateur) FROM utilisateur), 1), true);
-&
